@@ -10,7 +10,12 @@ const bookRouter = express.Router();
 const Book = require('./models/bookModel');
 
 bookRouter.route('/books').get((req, res) => {
-  Book.find((err, books) => {
+  //get the query from the url and pass it to the find
+  const query = {};
+  if (req.query.genre) {
+    query.genre = req.query.genre;
+  }
+  Book.find(query, (err, books) => {
     if (err) {
       return res.send(err);
     }
