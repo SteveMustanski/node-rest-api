@@ -23,30 +23,33 @@ function routes(Book) {
         return res.json(books);
       });
     });
+  bookRouter.use('/books/:dbBookId', (req, res, next) => {
+    //get the db book id from the url and pass it to the find
+    Book.findById(req.params.dbBookId, (err, book) => {
+      if (err) {
+        return res.send(err);
+      }
+      if (book) {
+        req.book = book;
+        return next();
+      }
+      return res.sendStatus(404);
+    });
+  });
   bookRouter
     .route('/books/:dbBookId')
     .get((req, res) => {
-      //get the db book id from the url and pass it to the find
-      Book.findById(req.params.dbBookId, (err, book) => {
-        if (err) {
-          return res.send(err);
-        }
-        return res.json(book);
-      });
+      res.json(req.book);
     })
     .put((req, res) => {
-      Book.findById(req.params.dbBookId, (err, book) => {
-        if (err) {
-          return res.send(err);
-        }
-        book.title = req.body.title;
-        book.author = req.body.author;
-        book.genre = req.body.genre;
-        book.read = req.body.read;
-        book.bookId = null;
-        book.save();
-        return res.json(book);
-      });
+      const { book } = req;
+      book.title = req.body.title;
+      book.author = req.body.author;
+      book.genre = req.body.genre;
+      book.read = req.body.read;
+      book.bookId = null;
+      book.save();
+      return res.json(book);
     });
   return bookRouter;
 }
