@@ -1,28 +1,13 @@
 const express = require('express');
+const booksContoller = require('../controllers/booksController');
 
 function routes(Book) {
   const bookRouter = express.Router();
+  const controller = booksContoller(Book);
   bookRouter
     .route('/books')
-    .post((req, res) => {
-      const book = new Book(req.body);
-
-      book.save();
-      res.status(201).json(book);
-    })
-    .get((req, res) => {
-      //get the query from the url and pass it to the find
-      const query = {};
-      if (req.query.genre) {
-        query.genre = req.query.genre;
-      }
-      Book.find(query, (err, books) => {
-        if (err) {
-          return res.send(err);
-        }
-        return res.json(books);
-      });
-    });
+    .post(controller.post)
+    .get(controller.get);
   bookRouter.use('/books/:dbBookId', (req, res, next) => {
     //get the db book id from the url and pass it to the find
     Book.findById(req.params.dbBookId, (err, book) => {
@@ -70,6 +55,14 @@ function routes(Book) {
           return res.send(err);
         }
         return res.json(book);
+      });
+    })
+    .delete((req, res) => {
+      req.book.remove(err => {
+        if (err) {
+          return res.send(err);
+        }
+        return res.sendStatus(204);
       });
     });
   return bookRouter;
