@@ -18,14 +18,19 @@ describe('Book Crud Test', () => {
       .send(bookPost)
       .expect(200)
       .end((err, results) => {
-        results.body.read.should.not.equal('false');
+        results.body.read.should.equal(false);
         results.body.should.have.property('_id');
         done();
       });
   });
 
   afterEach(done => {
-    Book.deleteMany({}.exec());
+    Book.deleteMany({}).exec();
+    done();
+  });
+
+  after(done => {
+    mongoose.connection.close();
     done();
   });
 });
