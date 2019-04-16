@@ -27,7 +27,7 @@ app.get('/', (req, res) => {
   res.send('Welcome to the API!!!');
 });
 
-app.listen(port, () => {
+app.server = app.listen(port, () => {
   console.log(`Application listening on port ${port}`);
 });
 
