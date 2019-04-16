@@ -11,7 +11,7 @@ if (process.env.ENV === 'Test') {
   });
 } else {
   console.log('This is not a test');
-  const db = mongoose.connect('mongodb://localhost/bookAPI_prod', {
+  const db = mongoose.connect('mongodb://localhost/bookAPI', {
     useNewUrlParser: true,
   });
 }
